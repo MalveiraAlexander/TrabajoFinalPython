@@ -1,0 +1,51 @@
+{% extends 'index.html' %}
+
+{% block link %}
+<a class="nav-link active" href="{% url 'posts' %}">Posts</a>
+{% endblock link %}
+
+{% block linkAbout %}
+<a class="nav-link" href="{% url 'about' %}">Acerca de</a>
+{% endblock linkAbout %}
+
+{% block linkSend %}
+<a class="nav-link" href="{% url 'send' %}">Enviar Mensaje</a>
+{% endblock linkSend %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-end text-end mb-4">
+    {% if request.user.is_staff %}
+      <div class="col-3">
+        <a class="btn btn-success" href="{% url 'add_post' %}">Publicar nuevo Post</a>
+      </div>
+    {% endif %}
+  </div>
+  {% if isNull %}
+  <div class="row justify-content-center mb-3 text-center">
+    <p class="text-danger">No se encontraron posts</p>
+  </div>
+  {% else %}
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for post in posts %}
+    <div class="col-4">
+      <a style="text-decoration: none; color: black; width: 100%" href="{% url 'view_post' post.pk %}">
+      
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{post.title}}</h5>
+              <p class="card-text">{{post.subtitle}}</p>
+            </div>
+            {% if request.user.is_staff %}
+            <div class="card-footer">
+              <a class="btn btn-danger" href="{% url 'deletePost' post.id %}">Eliminar</a>
+            </div>
+            {% endif %}
+          </div>
+      </a>
+    </div>
+    {% endfor %}
+</div>
+  {% endif %}
+  
+{% endblock content %}

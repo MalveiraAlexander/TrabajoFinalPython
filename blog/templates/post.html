@@ -1,0 +1,34 @@
+{% extends 'index.html' %}
+
+{% block link %}
+<a class="nav-link" href="{% url 'posts' %}">Posts</a>
+{% endblock link %}
+
+{% block linkAbout %}
+<a class="nav-link" href="{% url 'about' %}">Acerca de</a>
+{% endblock linkAbout %}
+
+{% block linkSend %}
+<a class="nav-link" href="{% url 'send' %}">Enviar Mensaje</a>
+{% endblock linkSend %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center text-center mb-4">
+      <h1>{{post.title}}</h1>
+  </div>
+  <div class="row justify-content-center text-center mb-4">
+    <small>Autor: {{post.autor}} | Fecha: {{post.date}}</small>
+</div>
+  <div class="row justify-content-center text-center mb-4">
+    <h3>{{post.subtitle}}</h3>
+  </div>
+  <div class="row justify-content-center text-capitalize">
+      <div class="col-7">
+        <div class="card p-2">
+          <p>{{post.body}}</p>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock content %}

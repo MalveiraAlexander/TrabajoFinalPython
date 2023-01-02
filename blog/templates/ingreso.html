@@ -1,0 +1,22 @@
+{% extends 'index_logout.html' %}
+{% load bootstrap5 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+{% block title %}
+    <h1>Ingresar al Blog</h1>
+{% endblock title %}
+{% block content_form %}
+    <form method="POST" style="margin-top: 100px;" action="{% url 'ingreso' %}">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div class="mb-3">
+            <button class="btn btn-success" type="submit" >Ingresar</button>
+        </div>
+        <div class="mb-3">
+            <a class="btn btn-primary" href="{% url 'registro' %}" >Registrarse</a>
+        </div>
+    </form>
+{% endblock %}

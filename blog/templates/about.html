@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+
+{% block link %}
+<a class="nav-link" href="{% url 'posts' %}">Posts</a>
+{% endblock link %}
+
+{% block linkAbout %}
+<a class="nav-link active" href="{% url 'about' %}">Acerca de</a>
+{% endblock linkAbout %}
+
+
+
+{% block content %}
+Test
+{% endblock content %}
