@@ -7,7 +7,7 @@ class PostForm(forms.Form):
   title = forms.CharField(max_length=150, required=True, label='Titulo')
   subtitle = forms.CharField(max_length=300, required=True, label='Sub Titulo')
   body = forms.CharField(widget=forms.Textarea(attrs={'rows':3, 'cols':5}), label='Cuerpo')
-  
+#   img = forms.ImageField()
   
 class SMSForm(forms.Form):
     User = get_user_model()

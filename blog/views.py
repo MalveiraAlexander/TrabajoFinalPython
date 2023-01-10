@@ -11,7 +11,8 @@ from django.contrib.auth import login, authenticate, logout
 def addPost(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = PostForm(request.POST)
+            form = PostForm(request.POST, request.FILES)
+            print(form.is_valid())
             if form.is_valid():
                 info = form.cleaned_data
                 post = Post(title=info['title'], body=info['body'], subtitle=info['subtitle'], autor=f'{request.user.first_name} {request.user.last_name}')

@@ -10,7 +10,7 @@ class Post(models.Model):
   body = models.TextField()
   autor = models.CharField(max_length=200, null=True)
   date = models.DateTimeField(auto_now_add=True)
-  img = models.ImageField(upload_to='album_imgs/', null=True)
+  img = models.ImageField(upload_to='blog/album_imgs/', null=True)
   
 class Mensaje(models.Model):
   id = models.IntegerField(primary_key=True)
