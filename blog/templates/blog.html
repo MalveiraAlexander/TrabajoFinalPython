@@ -33,12 +33,31 @@
       
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">{{post.title}}</h5>
-              <p class="card-text">{{post.subtitle}}</p>
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-4">
+                    <img style="width: 100px; height: 100px; border-radius: 100%;" src="images/{{post.img}}" alt="...">
+                  </div>
+                  <div class="col-8">
+                    <h5 class="card-title">{{post.title}}</h5>
+                    <p class="card-text">{{post.subtitle}}</p>
+                  </div>
+                </div>
+              </div>
+              
             </div>
             {% if request.user.is_staff %}
             <div class="card-footer">
-              <a class="btn btn-danger" href="{% url 'deletePost' post.id %}">Eliminar</a>
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-auto">
+                    <a class="btn btn-warning" href="{% url 'editPost' post.id %}">Editar</a>
+                  </div>
+                  <div class="col-auto">
+                    <a class="btn btn-danger" href="{% url 'deletePost' post.id %}">Eliminar</a>
+                  </div>
+                </div>
+              </div>
             </div>
             {% endif %}
           </div>

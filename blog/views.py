@@ -11,16 +11,36 @@ from django.contrib.auth import login, authenticate, logout
 def addPost(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = PostForm(request.POST, request.FILES)
+            form = PostForm(request.POST or None, request.FILES or None)
             print(form.is_valid())
             if form.is_valid():
                 info = form.cleaned_data
-                post = Post(title=info['title'], body=info['body'], subtitle=info['subtitle'], autor=f'{request.user.first_name} {request.user.last_name}')
+                image = info['img']
+                post = Post(img=image, title=info['title'], body=info['body'], subtitle=info['subtitle'], autor = request.user)
                 post.save()
             return HttpResponseRedirect('/')
         else:
             formulario = PostForm()
-            return render(request, 'addpost.html', {'form': formulario})
+            return render(request, 'addpost.html', {'form': formulario, 'postId': 0})
+    else:
+        return HttpResponseRedirect('/ingreso/')
+
+def editPost(request, id):
+    if request.user.is_authenticated:
+        post = Post.objects.get(id = id)
+        if request.method == 'POST':
+            form = PostForm(request.POST or None, request.FILES or None)
+            if form.is_valid():
+                info = form.cleaned_data
+                post.img = info['img']
+                post.title = info['title']
+                post.body = info['body']
+                post.subtitle = info['subtitle']
+                post.save()
+            return HttpResponseRedirect('/')
+        else:
+            formulario = PostForm(initial={'title': post.title, 'subtitle': post.subtitle, 'body': post.body})
+            return render(request, 'addpost.html', {'form': formulario, 'postId': post.id})
     else:
         return HttpResponseRedirect('/ingreso/')
     
@@ -117,6 +137,75 @@ def about(request):
 def cierre(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+def viewProfile(request, username = 'not'):
+    if request.user.is_authenticated:
+        desc = ''
+        img = '/images/user_img/default.jpg'
+        user = request.user
+        if username != 'not':
+            UserModel = get_user_model()
+            user = UserModel.objects.get(username = username)
+        
+        list_img = AvatarImage.objects.filter(user=user)
+        list_desc = DescripcionUser.objects.filter(user=user)
+        
+        if len(list_img) != 0:
+            img = list_img[0].img.url
+        if len(list_desc) != 0:
+            desc = list_desc[0].desc
+        
+        return render(request, 'profile.html', {'img' : img, 'desc' : desc, 'userView': user})
+    else:
+        return HttpResponseRedirect('/ingreso/')
+
+def editProfile(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = EditUser(request.POST or None)
+            print(form.is_valid())
+            if form.is_valid():
+                User = get_user_model()
+                uname = request.user.username
+                user = User.objects.get(username=uname)
+                if user is not None:
+                    user.first_name = form.cleaned_data.get('first_name')
+                    user.last_name = form.cleaned_data.get('last_name')
+                    user.save()
+                    desc_previous = DescripcionUser.objects.filter(user = user)
+                    if len(desc_previous) > 0:
+                        desc_previous[0].delete()
+                    desc = DescripcionUser(user = user, desc = form.cleaned_data.get('desc'))
+                    desc.save()
+                else:
+                    print('User not found')
+                
+            return HttpResponseRedirect('/you/')
+        else:
+            formulario = EditUser()
+            return render(request, 'profile_edit.html', {'form': formulario})
+    else:
+        return HttpResponseRedirect('/ingreso/')
+
+def chargeImgProfile(request):
+    if request.user.is_authenticated:
+        if request.method=='POST':
+            form = AvatarForm(request.POST or None, request.FILES or None)
+            if form.is_valid():
+                previous = AvatarImage.objects.filter(user=request.user)
+                if len(previous) > 0:
+                    previous[0].delete()
+                avatar = AvatarImage(user = request.user, img = request.FILES['img'])
+                avatar.save()
+                return HttpResponseRedirect('/you/')
+            else:
+                return render(request, 'charge_img.html', {'form': form, 'mensaje': 'Ups! No pudimos agregar o cambiar tu avatar'})
+            
+        else:
+            form = AvatarForm()
+            return render(request, 'charge_img.html', {'form': form})
+    else:
+        return HttpResponseRedirect('/ingreso/')
 
 def ingreso(request):
     if request.method == 'GET':

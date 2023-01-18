@@ -1,17 +1,12 @@
 {% extends 'index.html' %}
-{% load bootstrap5 %}
-
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-
-{% bootstrap_messages %}
+{% load crispy_forms_tags %} 
 
 {% block link %}
 <a class="nav-link" href="{% url 'posts' %}">Posts</a>
 {% endblock link %}
 
 {% block linkAbout %}
-<a class="nav-link active" href="{% url 'about' %}">Acerca de</a>
+<a class="nav-link" href="{% url 'about' %}">Acerca de</a>
 {% endblock linkAbout %}
 
 {% block linkSend %}
@@ -22,16 +17,27 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row justify-content-center text-center">
-        <h1 >Publicar nuevo post</h1>
+        <h1>Publicar nuevo post</h1>
     </div>
     <div class="row justify-content-center mt-4">
         <div class="col-7">
-            <form action="{% url 'add_post' %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
-                {% bootstrap_form form %}
-                <div class="mb-3">
-                    <button class="btn btn-success" type="submit" >Publicar</button>
-                </div>
-            </form>
+            {% if postId == 0 %}
+                <form action="{% url 'add_post' %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+                    {{ form.media }}
+                    <table>
+                        {{ form|crispy }}
+                    </table>
+                    <button class="btn btn-success" type="submit">Postear</button>
+                </form>
+            {% else %}
+                <form action="{% url 'editPost' postId %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+                    {{ form.media }}
+                    <table>
+                        {{ form|crispy }}
+                    </table>
+                    <button class="btn btn-success" type="submit">Editar Post</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>
